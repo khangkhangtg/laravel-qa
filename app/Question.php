@@ -20,7 +20,7 @@ class Question extends Model
     }
 
     public function getUrlAttribute() {
-        return route('questions.show', $this->id);
+        return route('questions.show', $this->slug);
     }
 
     public function getCreatedDateAttribute() // it calls Mutator
@@ -37,5 +37,9 @@ class Question extends Model
             return 'answered';
         }
         return 'unanswered';
+    }
+
+    public function getBodyHTMLAttribute() {
+        return \Parsedown::instance()->text($this->body);
     }
 }
