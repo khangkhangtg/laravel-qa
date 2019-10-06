@@ -33,7 +33,7 @@ class Question extends Model
         if (isset($this->best_answer_id)) {
             return 'answered-accepted';
         }
-        if ($this->answers > 0) {
+        if ($this->answers_count > 0) {
             return 'answered';
         }
         return 'unanswered';
@@ -41,5 +41,9 @@ class Question extends Model
 
     public function getBodyHTMLAttribute() {
         return \Parsedown::instance()->text($this->body);
+    }
+
+    public function answers () {
+        return $this->hasMany(Answer::class);
     }
 }
