@@ -67,13 +67,16 @@ class QuestionsController extends Controller
      */
     public function edit(Question $question)
     {
+        if (\Gate::denies('update-question', $question)) {
+            return abort(403, 'Access denied.');
+        }
         return view('questions.edit')->with(compact('question'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\AskQuestionRequest  $request
      * @param  App\Question $question
      * @return \Illuminate\Http\Response
      */
@@ -92,8 +95,11 @@ class QuestionsController extends Controller
      */
     public function destroy(Question $question)
     {
-        $question->delete();
+        if (\Gate::allows('delete-question', $question)) {
+            $question->delete();
 
-        return redirect("/questions")->with('success', 'Your question has been deleted.');
+            return redirect("/questions")->with('success', 'Your question has been deleted.');
+        }
+        return abort(403, 'Access denied.');
     }
 }
