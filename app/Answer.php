@@ -21,7 +21,7 @@ class Answer extends Model
         return $this->belongsTo(Question::class);
     }
 
-    public function getBodyHTMLAttribute () {
+    public function getBodyHTMLAttribute () { // use Purifier
         return clean(\Parsedown::instance()->text($this->body));
     }
 

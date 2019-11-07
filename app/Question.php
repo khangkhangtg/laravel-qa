@@ -42,11 +42,11 @@ class Question extends Model
     }
 
     public function getBodyHTMLAttribute() {
-        return $this->bodyHtml();
+        return clean($this->bodyHtml());
     }
 
-    private function bodyHtml () {
-        return clean(\Parsedown::instance()->text($this->body));
+    private function bodyHtml () { // use Purifier
+        return \Parsedown::instance()->text($this->body);
     }
 
     public function getExcerptAttribute () {
@@ -58,7 +58,7 @@ class Question extends Model
     }
 
     public function answers () {
-        return $this->hasMany(Answer::class);
+        return $this->hasMany(Answer::class)->orderBy('votes_count', 'desc');
     }
 
     public function acceptBestAnswer (Answer $answer) {
