@@ -42,7 +42,19 @@ class Question extends Model
     }
 
     public function getBodyHTMLAttribute() {
-        return \Parsedown::instance()->text($this->body);
+        return $this->bodyHtml();
+    }
+
+    private function bodyHtml () {
+        return clean(\Parsedown::instance()->text($this->body));
+    }
+
+    public function getExcerptAttribute () {
+        return $this->excerpt(250);
+    }
+
+    public function excerpt ($length) { // prevent to XSS attack on index
+        return str_limit(strip_tags($this->bodyHtml()), $length);
     }
 
     public function answers () {

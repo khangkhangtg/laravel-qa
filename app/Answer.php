@@ -22,7 +22,7 @@ class Answer extends Model
     }
 
     public function getBodyHTMLAttribute () {
-        return \Parsedown::instance()->text($this->body);
+        return clean(\Parsedown::instance()->text($this->body));
     }
 
     public static function boot() // Eloquent Events
