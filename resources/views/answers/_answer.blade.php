@@ -30,10 +30,11 @@
             </div>
             <div class="col-4"></div>
             <div class="col-4">
-                @include('shared._author', [
+                {{-- @include('shared._author', [
                     'label' => 'answer',
                     'model' => $answer,
-                ])
+                ]) --}}
+                <user-info :model="{{ $answer }}" label="Answered"></user-info>
             </div>
         </div>
 
