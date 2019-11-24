@@ -23,9 +23,7 @@
                                 'model' => $question,
                             ])
 
-                            @include('shared._favorite', [
-                                'question' => $question,
-                            ])
+                            <favorite :question="{{ $question }}"></favorite>
                         </div>
 
                         <div class="media-body">
@@ -34,11 +32,6 @@
                                 <div class="col-4"></div>
                                 <div class="col-4"></div>
                                 <div class="col-4">
-                                    {{-- @include('shared._author', [
-                                        'label' => 'asked',
-                                        'model' => $question,
-                                    ]) --}}
-
                                     <user-info :model="{{ $question }}" label="Asked"></user-info>
                                 </div>
                             </div>
