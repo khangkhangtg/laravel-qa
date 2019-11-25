@@ -5,9 +5,13 @@
                 'model' => $answer,
             ])
     
-            @include('shared._accept', [
+            {{-- @include('shared._accept', [
                 'answer' => $answer,
-            ])
+            ]) --}}
+
+        {{-- <favorite :question="{{ $answer }}"></favorite> --}}
+
+            <accept :answer="{{ $answer }}"></accept>
         </div>
     
         <div class="media-body">
