@@ -19,9 +19,11 @@
     
                     <div class="media">
                         <div class="d-flex flex-column vote-controls">
-                            @include('shared._vote', [
+                            {{-- @include('shared._vote', [
                                 'model' => $question,
-                            ])
+                            ]) --}}
+
+                            <vote :model="{{ $question }}" name="question"></vote>
 
                             <favorite :question="{{ $question }}"></favorite>
                         </div>
