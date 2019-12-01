@@ -35,8 +35,6 @@
 
 <script>
 import Accept from './Accept';
-// import UserInfo from './UserInfo';
-// import Vote from './Vote';
 
 export default {
     props: ['answer'],
@@ -94,10 +92,7 @@ export default {
                     ['<button><b>YES</b></button>', (instance, toast) => {
                         axios.delete(this.endpoint)
                             .then(res => {
-                                $(this.$el).fadeOut(500, () => {
-                                    this.$toast.success(res.data.message, 'Success', {timeout: 3000, position: 'topRight', progressBar: false,});
-                                    
-                                });
+                                this.$emit('deleted');
                         });
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                     }, true],
