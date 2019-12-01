@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import EventBus from '../event-bus.js';
+
 export default {
     props: ['answer'],
 
@@ -36,6 +38,12 @@ export default {
         }
     },
 
+    created () {
+        EventBus.$on('isAccepted', id => { // listen for a custom Event isAccepted
+            this.isBest = (this.id === id);
+        })
+    },
+
     methods: {
         create () {
             axios.post(`/answers/${this.id}/accept`)
@@ -46,6 +54,8 @@ export default {
                     });
 
                     this.isBest = true;
+
+                    EventBus.$emit('isAccepted', this.id); // add Custom Event listener isAccepted
                 });
         },
     },
