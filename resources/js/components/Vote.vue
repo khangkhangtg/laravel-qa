@@ -19,7 +19,7 @@ export default {
     data() {
         return {
             id: this.model.id,
-            count: this.model.votes_count,
+            count: this.model.votes_count || 0,
         }
     },
 
