@@ -27,7 +27,7 @@
                         <div class="d-flex align-items-center">
                             <h1>{{ title }}</h1>
                             <div class="ml-auto">
-                                    <a href="/questions" class="btn btn-outline-primary">Back to all questions</a>   
+                                <a href="/questions" class="btn btn-outline-primary">Back to all questions</a> 
                             </div>
                         </div>
                     </div>
@@ -65,9 +65,12 @@
 
 <script>
 import Favorite from './Favorite';
+import modification from '../mixins/modification.js';
 
 export default {
     props: ['question'],
+
+    mixins: [modification],
 
     components: {Favorite},
 
@@ -77,7 +80,6 @@ export default {
             body: this.question.body,
             bodyHtml: this.question.body_html,
             id: this.question.id,
-            editing: false,
             beforeEditCache: {},
         }
     },
@@ -93,65 +95,37 @@ export default {
     },
 
     methods: {
-        edit () {
+        setEditCache () {
             this.beforeEditCache = {
                 body: this.body,
                 title: this.title
             };
-            this.editing = true;
         },
 
-        cancel () {
+        restoreFromCache () {
             this.body = this.beforeEditCache.body;
             this.title = this.beforeEditCache.title;
-            this.editing = false;
         },
 
-        update () {
-            axios.put(this.endpoint, {
+        payload () {
+            return {
                 body: this.body,
                 title: this.title
-            })
-            .catch(({response}) => {
-                this.$toast.error(response.data.message, 'Error', {timeout: 3000});
-            })
-            .then(({data}) => {
-                this.bodyHtml = data.body_html;
-                this.editing = false;
-                this.$toast.success(data.message, 'Success', {timeout: 3000});
-            });
-        },
+            }
+        }, 
 
-        destroy () {
-            console.log(this.question.user.id + ' ' + this.question.user_id);
-            this.$toast.question('Are you sure?', 'Confirm',{
-                timeout: 20000,
-                close: false,
-                overlay: true,
-                displayMode: 'once',
-                zindex: 999,
-                position: 'center',
-                progressBar: false,
-                buttons: [
-                    ['<button><b>YES</b></button>', (instance, toast) => {
-                        axios.delete(this.endpoint)
-                            .then(({data}) => {
-                                this.$toast.success(data.message, 'Success', {timeout: 2000});
-                            })
-                            .catch(({response}) => {
-                                this.$toast.error(response.data.message, 'Error', {timeout: 3000});
-                            });
-                        // instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        
-                        setTimeout(() => {
-                            window.location.href = '/questions';
-                        }, 2000);
-                    }, true],
-                    ['<button>NO</button>', (instance, toast) => {
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }],
-                ],
-            });
+        delete () {
+            axios.delete(this.endpoint)
+                .then(({data}) => {
+                    this.$toast.success(data.message, 'Success', {timeout: 2000});
+                })
+                .catch(({response}) => {
+                    this.$toast.error(response.data.message, 'Error', {timeout: 3000});
+                });
+            
+            setTimeout(() => {
+                window.location.href = '/questions';
+            }, 2000);
         }
     }
 }

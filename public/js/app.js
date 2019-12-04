@@ -11088,6 +11088,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Accept__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Accept */ "./resources/js/components/Accept.vue");
+/* harmony import */ var _mixins_modification_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/modification.js */ "./resources/js/mixins/modification.js");
 //
 //
 //
@@ -11124,11 +11125,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['answer'],
+  mixins: [_mixins_modification_js__WEBPACK_IMPORTED_MODULE_1__["default"]],
   data: function data() {
     return {
-      editing: false,
       body: this.answer.body,
       bodyHtml: this.answer.body_html,
       id: this.answer.id,
@@ -11140,60 +11142,26 @@ __webpack_require__.r(__webpack_exports__);
     Accept: _Accept__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   methods: {
-    edit: function edit() {
+    setEditCache: function setEditCache() {
       this.beforeEditCache = this.body;
-      this.editing = true;
     },
-    cancel: function cancel() {
+    restoreFromCache: function restoreFromCache() {
       this.body = this.beforeEditCache;
-      this.editing = false;
     },
-    update: function update() {
+    payload: function payload() {
+      return {
+        body: this.body
+      };
+    },
+    "delete": function _delete() {
       var _this = this;
 
-      axios.patch(this.endpoint, {
-        body: this.body
-      }).then(function (res) {
-        _this.bodyHtml = res.data.bodyHtml;
-        _this.editing = false; // alert(res.data.message);
-
+      axios["delete"](this.endpoint).then(function (res) {
         _this.$toast.success(res.data.message, 'Success', {
-          timeout: 3000,
-          position: 'topRight',
-          progressBar: false
+          timeout: 3000
         });
-      })["catch"](function (err) {
-        // console.log('Something went wrong.');
-        _this.$toast.error('Something went wrong.', 'Error', {
-          timeout: 3000,
-          position: 'topRight',
-          progressBar: false
-        });
-      });
-    },
-    destroy: function destroy() {
-      var _this2 = this;
 
-      this.$toast.question('Are you sure?', 'Confirm', {
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        displayMode: 'once',
-        zindex: 999,
-        position: 'center',
-        progressBar: false,
-        buttons: [['<button><b>YES</b></button>', function (instance, toast) {
-          axios["delete"](_this2.endpoint).then(function (res) {
-            _this2.$emit('deleted');
-          });
-          instance.hide({
-            transitionOut: 'fadeOut'
-          }, toast, 'button');
-        }, true], ['<button>NO</button>', function (instance, toast) {
-          instance.hide({
-            transitionOut: 'fadeOut'
-          }, toast, 'button');
-        }]]
+        _this.$emit('deleted');
       });
     }
   },
@@ -11446,6 +11414,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Favorite__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Favorite */ "./resources/js/components/Favorite.vue");
+/* harmony import */ var _mixins_modification_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/modification.js */ "./resources/js/mixins/modification.js");
 //
 //
 //
@@ -11512,8 +11481,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['question'],
+  mixins: [_mixins_modification_js__WEBPACK_IMPORTED_MODULE_1__["default"]],
   components: {
     Favorite: _Favorite__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
@@ -11523,7 +11494,6 @@ __webpack_require__.r(__webpack_exports__);
       body: this.question.body,
       bodyHtml: this.question.body_html,
       id: this.question.id,
-      editing: false,
       beforeEditCache: {}
     };
   },
@@ -11536,76 +11506,41 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    edit: function edit() {
+    setEditCache: function setEditCache() {
       this.beforeEditCache = {
         body: this.body,
         title: this.title
       };
-      this.editing = true;
     },
-    cancel: function cancel() {
+    restoreFromCache: function restoreFromCache() {
       this.body = this.beforeEditCache.body;
       this.title = this.beforeEditCache.title;
-      this.editing = false;
     },
-    update: function update() {
-      var _this = this;
-
-      axios.put(this.endpoint, {
+    payload: function payload() {
+      return {
         body: this.body,
         title: this.title
-      })["catch"](function (_ref) {
-        var response = _ref.response;
+      };
+    },
+    "delete": function _delete() {
+      var _this = this;
+
+      axios["delete"](this.endpoint).then(function (_ref) {
+        var data = _ref.data;
+
+        _this.$toast.success(data.message, 'Success', {
+          timeout: 2000
+        });
+      })["catch"](function (_ref2) {
+        var response = _ref2.response;
 
         _this.$toast.error(response.data.message, 'Error', {
           timeout: 3000
         });
-      }).then(function (_ref2) {
-        var data = _ref2.data;
-        _this.bodyHtml = data.body_html;
-        _this.editing = false;
-
-        _this.$toast.success(data.message, 'Success', {
-          timeout: 3000
-        });
       });
-    },
-    destroy: function destroy() {
-      var _this2 = this;
-
-      console.log(this.question.user.id + ' ' + this.question.user_id);
-      this.$toast.question('Are you sure?', 'Confirm', {
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        displayMode: 'once',
-        zindex: 999,
-        position: 'center',
-        progressBar: false,
-        buttons: [['<button><b>YES</b></button>', function (instance, toast) {
-          axios["delete"](_this2.endpoint).then(function (_ref3) {
-            var data = _ref3.data;
-
-            _this2.$toast.success(data.message, 'Success', {
-              timeout: 2000
-            });
-          })["catch"](function (_ref4) {
-            var response = _ref4.response;
-
-            _this2.$toast.error(response.data.message, 'Error', {
-              timeout: 3000
-            });
-          }); // instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-
-          setTimeout(function () {
-            window.location.href = '/questions';
-          }, 2000);
-        }, true], ['<button>NO</button>', function (instance, toast) {
-          instance.hide({
-            transitionOut: 'fadeOut'
-          }, toast, 'button');
-        }]]
-      });
+      setTimeout(function () {
+        window.location.href = '/questions';
+      }, 2000);
     }
   }
 });
@@ -61349,6 +61284,85 @@ __webpack_require__.r(__webpack_exports__);
 _fortawesome_fontawesome_svg_core__WEBPACK_IMPORTED_MODULE_0__["library"].add(_fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["fas"], _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCaretUp"], _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCaretDown"], _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faStar"], _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCheck"]); // Kicks off the process of finding <i> tags and replacing with <svg>
 
 _fortawesome_fontawesome_svg_core__WEBPACK_IMPORTED_MODULE_0__["dom"].watch();
+
+/***/ }),
+
+/***/ "./resources/js/mixins/modification.js":
+/*!*********************************************!*\
+  !*** ./resources/js/mixins/modification.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      editing: false
+    };
+  },
+  methods: {
+    edit: function edit() {
+      this.setEditCache();
+      this.editing = true;
+    },
+    cancel: function cancel() {
+      this.restoreFromCache();
+      this.editing = false;
+    },
+    setEditCache: function setEditCache() {},
+    restoreFromCache: function restoreFromCache() {},
+    update: function update() {
+      var _this = this;
+
+      axios.put(this.endpoint, this.payload()).then(function (res) {
+        _this.bodyHtml = res.data.bodyHtml;
+        _this.editing = false;
+
+        _this.$toast.success(res.data.message, 'Success', {
+          timeout: 3000,
+          position: 'topRight',
+          progressBar: false
+        });
+      })["catch"](function (_ref) {
+        var response = _ref.response;
+
+        _this.$toast.error(response.data.message, 'Error', {
+          timeout: 3000,
+          position: 'topRight',
+          progressBar: false
+        });
+      });
+    },
+    payload: function payload() {},
+    destroy: function destroy() {
+      var _this2 = this;
+
+      this.$toast.question('Are you sure?', 'Confirm', {
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        zindex: 999,
+        position: 'center',
+        progressBar: false,
+        buttons: [['<button><b>YES</b></button>', function (instance, toast) {
+          _this2["delete"]();
+
+          instance.hide({
+            transitionOut: 'fadeOut'
+          }, toast, 'button');
+        }, true], ['<button>NO</button>', function (instance, toast) {
+          instance.hide({
+            transitionOut: 'fadeOut'
+          }, toast, 'button');
+        }]]
+      });
+    },
+    "delete": function _delete() {}
+  }
+});
 
 /***/ }),
 
